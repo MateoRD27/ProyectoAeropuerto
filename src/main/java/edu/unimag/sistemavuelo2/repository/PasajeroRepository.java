@@ -2,6 +2,7 @@ package edu.unimag.sistemavuelo2.repository;
 
 import edu.unimag.sistemavuelo2.entities.Pasajero;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,39 +12,45 @@ import java.util.Optional;
 
 @Repository
 public interface PasajeroRepository extends JpaRepository<Pasajero, Long> {
+    // Buscar un pasajero por su Nid exacto
+    List<Pasajero> findByNid(String nid);
 
-    // Buscar un pasajero por su número de identificación (nid)
-    @Query("SELECT p FROM Pasajero p WHERE p.nid = ?1")
-    Optional<Pasajero> buscarPorNid(String nid);
-
-    // Obtener todos los pasajeros que tengan al menos una reserva
-    @Query("SELECT p FROM Pasajero p WHERE SIZE(p.reservas) > 0")
-    List<Pasajero> obtenerPasajerosConReservas();
-
-    // Buscar pasajeros cuyo nombre empiece con una letra específica
-    @Query("SELECT p FROM Pasajero p WHERE p.nombre LIKE CONCAT(?1, '%')")
-    List<Pasajero> buscarPorLetraInicial(String letra);
-
-    // Contar cuántos pasajeros tienen pasaporte registrado
-    @Query("SELECT COUNT(p) FROM Pasajero p WHERE p.pasaporte IS NOT NULL")
-    long contarPasajerosConPasaporte();
-
-    // Obtener los nombres y sus identificadores de todos los pasajeros, ordenados por nombre
-    @Query("SELECT p.id, p.nombre FROM Pasajero p ORDER BY p.nombre ASC")
-    List<Object[]> obtenerIdYNombreOrdenados();
-
-    // Buscar un pasajero por su nombre exacto
+    //Buscar todos los pasajeros que tengan el mismo nombre
     List<Pasajero> findByNombre(String nombre);
 
-    // Buscar un pasajero por su número de identificación (nid)
-    Optional<Pasajero> findByNid(String nid);
+    //buscar un pasajero por su nombre y pasaporte
+    Optional<Pasajero> findByNombreAndPasaporteId(String nombre, Long pasaporteId);
 
-    // Buscar pasajeros que tengan al menos una reserva
-    List<Pasajero> findByReservasIsNotEmpty();
+    //añadir un pasajero
+    Pasajero save(Pasajero pasajero);
 
-    // Buscar pasajeros cuyo nombre contenga una palabra clave (ignorando mayúsculas y minúsculas)
-    List<Pasajero> findByNombreContainingIgnoreCase(String keyword);
+    //eliminar un pasajero
+    void delete(Pasajero pasajero);
 
-    // Buscar pasajeros que no tienen pasaporte asignado
-    List<Pasajero> findByPasaporteIsNull();
+
+
+
+    //buscar un pasajero por su uid y modificar su nombre y apellido
+    @Query("UPDATE Pasajero p SET p.nombre = :nombre, p.apellido = :apellido WHERE p.nid = :nid")
+    void updatePasajeroUid(@Param("id") Long id, @Param("nombre") String nombre, @Param("apellido") String apellido);
+
+    // obtener los pasajeros de una reserva dado un codigo de reserva
+    @Query("SELECT p FROM Pasajero p JOIN p.reservas r WHERE r.codigoReserva = :codigoReserva")
+    List<Pasajero> findPasajerosByCodigoReserva(@Param("codigoReserva") String codigoReserva);
+
+    //eliminar la reserva que haya hecho un pasajero dado el nid del pasajero y el UUID de la reserva
+    @Query("DELETE FROM Reserva r WHERE r.codigoReserva = :codigoReserva AND r.pasajero.nid = :nid")
+    void deleteReservaByNidAndCodigoReserva(@Param("nid") String nid, @Param("codigoReserva") String codigoReserva);
+
+    //obtener un pasajero dado su nombre y uid y actualizar su apellido
+    @Modifying
+    @Query("UPDATE Pasajero p SET p.apellido = :apellido WHERE p.nombre = :nombre AND p.id = :id")
+    void updateApellidoPasajeroByNombreAndUid(@Param("nombre") String nombre, @Param("id") Long id, @Param("apellido") String apellido);
+
+    //buscar un pasajero de un reserva dado el nid del pasajero y el uuid de la reserva
+    @Query("SELECT p FROM Pasajero p JOIN p.reservas r WHERE r.codigoReserva = :codigoReserva AND p.nid = :nid")
+    Pasajero findPasajeroByNidAndCodigoReserva(@Param("nid") String nid, @Param("codigoReserva") String codigoReserva);
+
+
+
 }

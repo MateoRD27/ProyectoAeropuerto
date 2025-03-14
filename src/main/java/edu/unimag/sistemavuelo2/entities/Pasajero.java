@@ -20,6 +20,7 @@ public class Pasajero {
     private Long id;
 
     private  String nombre;
+    private  String apellido;
     private String nid;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false)
