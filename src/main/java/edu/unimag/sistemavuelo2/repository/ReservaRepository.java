@@ -1,4 +1,5 @@
 package edu.unimag.sistemavuelo2.repository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
@@ -7,6 +8,7 @@ import edu.unimag.sistemavuelo2.entities.Reserva;
 import edu.unimag.sistemavuelo2.entities.Vuelo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -18,9 +20,13 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Optional<Reserva> findByCodigoReserva(UUID codigoReserva);
 
     //añadir una reserva
+    @Modifying
+    @Transactional
     Reserva save(Reserva reserva);
 
     //eliminar una reserva
+    @Modifying
+    @Transactional
     void delete(Reserva reserva);
 
     //buscar todas las reservas de un pasajero
@@ -37,10 +43,14 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Page<Reserva> findAll(Pageable pageable);
 
     //modificar el pasajero de una reserva dado el codigoReserva
+    @Modifying
+    @Transactional
     @Query("UPDATE Reserva r SET r.pasajero = ?1 WHERE r.codigoReserva = ?2")
     void updatePasajero(Pasajero pasajero, UUID codigoReserva);
 
     //modificar el vuelo de una reserva dado el codigoReserva
+    @Modifying
+    @Transactional
     @Query("UPDATE Reserva r SET r.vuelo = ?1 WHERE r.codigoReserva = ?2")
     void updateVuelo(Vuelo vuelo, UUID codigoReserva);
 

@@ -1,6 +1,7 @@
 package edu.unimag.sistemavuelo2.repository;
 
 import edu.unimag.sistemavuelo2.entities.Aerolinea;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,8 @@ public interface AerolineaRepository extends JpaRepository<Aerolinea, Long> {
     Optional<Aerolinea> findById(Long id);
 
     //añadir una aerolinea
+    @Modifying
+    @Transactional
     Aerolinea save(Aerolinea aerolinea);
 
     //obener las errolineas que inicien por una letra su nombre
@@ -39,11 +42,13 @@ public interface AerolineaRepository extends JpaRepository<Aerolinea, Long> {
 
     //cambiar el nombre de una aerolinea dado su id
     @Modifying
+    @Transactional
     @Query("UPDATE Aerolinea a SET a.nombre = :nombre WHERE a.id = :id")
     void updateAerolineaNombreById(Long id, String nombre);
 
     //eliminar una aerolinea dado su id
     @Modifying
+    @Transactional
     @Query("DELETE FROM Aerolinea a WHERE a.id = :id")
     void deleteAerolineaById(Long id);
 

@@ -15,6 +15,7 @@ public class TestcontainersConfiguration {
         return new PostgreSQLContainer<>(DockerImageName.parse("postgres:17"))
                 .withDatabaseName("sistemaVuelo2")
                 .withUsername("mateo")
-                .withPassword("1234");
+                .withPassword("1234")
+                .withReuse(true);
     }
 }

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "pasajeros")
@@ -13,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
+@Builder
 public class Pasajero {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +27,7 @@ public class Pasajero {
     private Pasaporte pasaporte;
 
 
-    @OneToMany(mappedBy = "pasajero", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "pasajero", fetch = FetchType.LAZY)
     private List<Reserva> reservas;
 
 }

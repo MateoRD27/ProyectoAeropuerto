@@ -1,6 +1,7 @@
 package edu.unimag.sistemavuelo2.repository;
 
 import edu.unimag.sistemavuelo2.entities.Pasajero;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,24 +14,28 @@ import java.util.Optional;
 @Repository
 public interface PasajeroRepository extends JpaRepository<Pasajero, Long> {
     // Buscar un pasajero por su Nid exacto
-    List<Pasajero> findByNid(String nid);
+    Optional<Pasajero> findByNid(String nid);
 
     //Buscar todos los pasajeros que tengan el mismo nombre
-    List<Pasajero> findByNombre(String nombre);
+    Optional<Pasajero> findByNombre(String nombre);
 
     //buscar un pasajero por su nombre y pasaporte
     Optional<Pasajero> findByNombreAndPasaporteId(String nombre, Long pasaporteId);
 
     //añadir un pasajero
+    @Modifying
+    @Transactional
     Pasajero save(Pasajero pasajero);
 
     //eliminar un pasajero
+    @Modifying
+    @Transactional
     void delete(Pasajero pasajero);
 
 
-
-
     //buscar un pasajero por su uid y modificar su nombre y apellido
+    @Modifying
+    @Transactional
     @Query("UPDATE Pasajero p SET p.nombre = :nombre, p.apellido = :apellido WHERE p.nid = :nid")
     void updatePasajeroUid(@Param("id") Long id, @Param("nombre") String nombre, @Param("apellido") String apellido);
 
@@ -39,11 +44,15 @@ public interface PasajeroRepository extends JpaRepository<Pasajero, Long> {
     List<Pasajero> findPasajerosByCodigoReserva(@Param("codigoReserva") String codigoReserva);
 
     //eliminar la reserva que haya hecho un pasajero dado el nid del pasajero y el UUID de la reserva
+    @Modifying
+    @Transactional
     @Query("DELETE FROM Reserva r WHERE r.codigoReserva = :codigoReserva AND r.pasajero.nid = :nid")
     void deleteReservaByNidAndCodigoReserva(@Param("nid") String nid, @Param("codigoReserva") String codigoReserva);
 
     //obtener un pasajero dado su nombre y uid y actualizar su apellido
+
     @Modifying
+    @Transactional
     @Query("UPDATE Pasajero p SET p.apellido = :apellido WHERE p.nombre = :nombre AND p.id = :id")
     void updateApellidoPasajeroByNombreAndUid(@Param("nombre") String nombre, @Param("id") Long id, @Param("apellido") String apellido);
 

@@ -1,9 +1,11 @@
 package edu.unimag.sistemavuelo2.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import edu.unimag.sistemavuelo2.entities.Vuelo;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +16,15 @@ public interface VueloRepository extends JpaRepository<Vuelo, Long> {
     Vuelo save(Vuelo vuelo);
 
     //eliminar un vuelo dado su numero de vuelo
+    @Modifying
+    @Transactional
     void deleteByNumeroVuelo(UUID numeroVuelo);
 
     //buscar un vuelo dado su numero de vuelo
     Optional<Vuelo> findByNumeroVuelo(UUID numeroVuelo);
 
     //buscar todos los vuelos paginado
+
     Page<Vuelo> findAll(Pageable pageable);
 
     //obtener todos los vuelos de una aerolinea dado el nombre de la aerolinea
