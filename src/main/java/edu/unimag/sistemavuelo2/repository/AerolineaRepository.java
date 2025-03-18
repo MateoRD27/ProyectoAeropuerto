@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface AerolineaRepository extends JpaRepository<Aerolinea, Long> {
 
@@ -17,16 +18,15 @@ public interface AerolineaRepository extends JpaRepository<Aerolinea, Long> {
     //buscar una aerolinea por su id
     Optional<Aerolinea> findById(Long id);
 
-    //añadir una aerolinea
-    @Modifying
-    @Transactional
-    Aerolinea save(Aerolinea aerolinea);
+    // buscar aerolíneas cuyo nombre contenga la palabra dada
+    List<Aerolinea> findByNombreContaining(String nombre);
 
     //obener las errolineas que inicien por una letra su nombre
     List<Aerolinea> findByNombreStartingWith(String letra);
 
-    //obtener las aerolineas que haya hecho un vuelo desde un origen x
-    List<Aerolinea> findByVuelosOrigen(String origen);
+    // contar las aerolíneas por nombre
+    long countByNombre(String nombre);
+
 
     // aerolineas que hayan hecho un vuelo a un destino x
     @Query("SELECT a FROM Aerolinea a JOIN a.vuelos v WHERE v.destino = :destino")
@@ -38,7 +38,7 @@ public interface AerolineaRepository extends JpaRepository<Aerolinea, Long> {
 
     //obtener las aerolineas que hayan hecho un vuelo con un numero de vuelo x
     @Query("SELECT a FROM Aerolinea a JOIN a.vuelos v WHERE v.numeroVuelo = :numeroVuelo")
-    List<Aerolinea> findAerolineasByVuelosNumeroVuelo(String numeroVuelo);
+    List<Aerolinea> findAerolineasByVuelosNumeroVuelo(UUID numeroVuelo);
 
     //cambiar el nombre de una aerolinea dado su id
     @Modifying
@@ -51,8 +51,5 @@ public interface AerolineaRepository extends JpaRepository<Aerolinea, Long> {
     @Transactional
     @Query("DELETE FROM Aerolinea a WHERE a.id = :id")
     void deleteAerolineaById(Long id);
-
-
-
 
 }
