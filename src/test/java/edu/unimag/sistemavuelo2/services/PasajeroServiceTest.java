@@ -58,6 +58,7 @@ class PasajeroServiceTest {
         verify(pasajeroRepository, times(1)).findByNombre("Juan");
     }
 
+
     @Test
     void countPasajerosByNombre() {
         // Dado
@@ -86,6 +87,7 @@ class PasajeroServiceTest {
         assertEquals("Juan", result.get().getNombre());
         verify(pasajeroRepository, times(1)).findByNombreAndPasaporteId("Juan", pasaporteId);
     }
+
 
     @Test
     void updatePasajeroByNid() {
