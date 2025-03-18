@@ -37,7 +37,11 @@ class PasajeroServiceTest {
         when(pasajeroRepository.findByNid("123111")).thenReturn(pasajeros);
 
         // Entonces
+<<<<<<< HEAD
         List<Pasajero> result = pasajeroService.findPasajerosByNid("123111");
+=======
+        List<Pasajero> result = pasajeroService.findPasajerosByNid("123");
+>>>>>>> 48281e52d71e2ddc62ec4d256abcacd844a8bb22
         assertEquals("Juan", result.get(0).getNombre());
         verify(pasajeroRepository, times(1)).findByNid("123111");
     }
