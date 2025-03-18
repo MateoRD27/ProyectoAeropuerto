@@ -11,7 +11,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
+@Builder
 public class Vuelo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,7 +25,7 @@ public class Vuelo {
     private Set<Reserva> reservas;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "vuelos_aerolineas",
             joinColumns = @JoinColumn(name = "vuelos_id", referencedColumnName = "id"),

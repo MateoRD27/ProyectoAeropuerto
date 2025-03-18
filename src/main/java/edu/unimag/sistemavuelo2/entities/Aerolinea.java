@@ -14,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class Aerolinea {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
