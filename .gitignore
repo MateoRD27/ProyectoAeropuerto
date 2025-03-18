@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/test/java/edu/unimag/sistemavuelo2/TestcontainersConfiguration.java
+
