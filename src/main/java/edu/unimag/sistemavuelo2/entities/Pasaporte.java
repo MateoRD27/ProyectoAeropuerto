@@ -15,8 +15,7 @@ public class Pasaporte {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    private String pasaporteNid;
+    private String numero;
 
     @OneToOne(mappedBy = "pasaporte")
     private Pasajero pasajero;

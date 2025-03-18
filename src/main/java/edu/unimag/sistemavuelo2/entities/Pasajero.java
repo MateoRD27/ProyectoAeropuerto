@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "pasajeros")
@@ -27,7 +28,7 @@ public class Pasajero {
     private Pasaporte pasaporte;
 
 
-    @OneToMany(mappedBy = "pasajero", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pasajero", fetch = FetchType.EAGER)
     private List<Reserva> reservas;
 
 }

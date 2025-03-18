@@ -24,4 +24,12 @@ public class Aerolinea {
 
     @ManyToMany(mappedBy = "aerolineas")
     private List<Vuelo> vuelos= new LinkedList<>();
+
+    // En la clase Aerolinea
+    public List<Vuelo> getVuelos() {
+        if (this.vuelos == null) {
+            this.vuelos = new LinkedList<>();
+        }
+        return this.vuelos;
+    }
 }

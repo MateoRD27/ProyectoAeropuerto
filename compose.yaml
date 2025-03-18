@@ -1,33 +1,33 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  db:
+  postgres:
     image: postgres:17
-    container_name: postgres_container_sistemaVuelo2
+    container_name: postgres_container_sistemaVuelo
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "${POSTGRES_PORT}:5432"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   app:
     build: .
-    container_name: springboot_app_sistemaVuelo2
+    container_name: springboot_app_sistemaVuelo
     restart: always
-    env_file:
-      - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "${SPRING_PORT}:9090"
+      - "8080:8080"
     depends_on:
-      - db
+      - postgres
 
 volumes:
   postgres_data:

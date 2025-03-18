@@ -13,7 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 @Builder
-
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,11 +20,11 @@ public class Reserva {
 
     private UUID codigoReserva= UUID.randomUUID();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pasajero_id")
     private Pasajero pasajero;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vuelos_id")
     private Vuelo vuelo;
 

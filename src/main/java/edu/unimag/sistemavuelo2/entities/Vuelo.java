@@ -1,4 +1,5 @@
 package edu.unimag.sistemavuelo2.entities;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -6,11 +7,9 @@ import java.util.*;
 
 @Entity
 @Table(name = "vuelos")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 public class Vuelo {
     @Id
@@ -25,7 +24,7 @@ public class Vuelo {
     private Set<Reserva> reservas;
 
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "vuelos_aerolineas",
             joinColumns = @JoinColumn(name = "vuelos_id", referencedColumnName = "id"),
@@ -33,4 +32,10 @@ public class Vuelo {
     )
     private List<Aerolinea> aerolineas= new ArrayList<>();
 
+    public List<Aerolinea> getAerolineas() {
+        if (this.aerolineas == null) {
+            this.aerolineas = new ArrayList<>();
+        }
+        return this.aerolineas;
+    }
 }
