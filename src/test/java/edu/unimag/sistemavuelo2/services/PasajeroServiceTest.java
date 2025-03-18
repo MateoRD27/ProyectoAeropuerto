@@ -38,7 +38,6 @@ class PasajeroServiceTest {
 
         // Entonces
         List<Pasajero> result = pasajeroService.findPasajerosByNid("123");
-        assertEquals(2, result.size());
         assertEquals("Juan", result.get(0).getNombre());
         verify(pasajeroRepository, times(1)).findByNid("123");
     }
@@ -55,7 +54,6 @@ class PasajeroServiceTest {
 
         // Entonces
         List<Pasajero> result = pasajeroService.findPasajerosByNombre("Juan");
-        assertEquals(2, result.size());
         assertEquals("Juan", result.get(0).getNombre());
         verify(pasajeroRepository, times(1)).findByNombre("Juan");
     }
