@@ -14,16 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.UUID;
-
+//la recomendacion es usar extendwich para que reconociera mikito y no en el constructor
 class PasajeroServiceTest {
-    @Mock
+    @Mock //
     private PasajeroRepository pasajeroRepository;
 
-    @InjectMocks
+    @InjectMocks //
     private PasajeroService pasajeroService;
 
     public PasajeroServiceTest() {
-        MockitoAnnotations.openMocks(this);
+        MockitoAnnotations.openMocks(this); //se utiliza para el junit4 y con el extendwich no se pone
     }
 
     @Test
@@ -40,8 +40,8 @@ class PasajeroServiceTest {
 
         List<Pasajero> result = pasajeroService.findPasajerosByNid("123111");
 
-        assertEquals("Juan", result.get(0).getNombre());
-        verify(pasajeroRepository, times(1)).findByNid("123111");
+        assertEquals("Juan", result.getFirst().getNombre()); //valida que cumple una condicion con otro valor
+        verify(pasajeroRepository, times(1)).findByNid("123111"); //se utiliza cuando dentro de la ejecucion se invocó el metodo
     }
 
     @Test
