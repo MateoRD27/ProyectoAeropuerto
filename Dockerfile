@@ -1,9 +1,6 @@
 FROM postgres:17
 
 # Variables de entorno para la configuración de PostgreSQL
-ENV POSTGRES_DB=sistemavuelo
-ENV POSTGRES_USER=sistemavuelo
-ENV POSTGRES_PASSWORD=sistemavuelo
 
 # Exponer el puerto estándar de PostgreSQL
 EXPOSE 5432
