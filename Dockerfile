@@ -1,16 +1,11 @@
-FROM maven:3.9.6-eclipse-temurin-22-jammy AS build
+FROM postgres:17
 
-# Configurar el directorio de trabajo
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+# Variables de entorno para la configuración de PostgreSQL
 
-# Usar la imagen de OpenJDK 21
-FROM openjdk:21-jdk-slim
-WORKDIR /app
-# Copiar el archivo JAR al contenedor
-COPY --from=build /app/target/sistemaVuelo-0.0.1-SNAPSHOT.jar app.jar
+# Exponer el puerto estándar de PostgreSQL
+EXPOSE 5432
 
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Opcional: Copiar scripts SQL para inicializar la base de datos
+# COPY ./init-scripts/ /docker-entrypoint-initdb.d/
+
+# El comando por defecto para iniciar PostgreSQL lo ejecuta la imagen base automáticamente
