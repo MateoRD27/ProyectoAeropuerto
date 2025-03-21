@@ -1,8 +1,7 @@
 package edu.unimag.sistemavuelo2.controller;
 import edu.unimag.sistemavuelo2.entities.Pasajero;
-import edu.unimag.sistemavuelo2.services.PasajeroService;
+import edu.unimag.sistemavuelo2.services.impl.PasajeroServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,21 +13,21 @@ import java.util.UUID;
 @RequestMapping("/pasajeros")
 public class PasajeroController {
 
-    private final PasajeroService pasajeroService;
+    private final PasajeroServiceImpl pasajeroService;
 
     @Autowired
-    public PasajeroController(PasajeroService pasajeroService) {
+    public PasajeroController(PasajeroServiceImpl pasajeroService) {
         this.pasajeroService = pasajeroService;
     }
 
     // Obtener un pasajero por su NID
     @GetMapping("/nid/{nid}")
-    public ResponseEntity<List<Pasajero>> getPasajerosByNid(@PathVariable String nid) {
-        List<Pasajero> pasajeros = pasajeroService.findPasajerosByNid(nid);
-        return pasajeros.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(pasajeros);
+    public ResponseEntity<Pasajero> getPasajeroByNid(@PathVariable String nid) {
+        Optional<Pasajero> pasajero = pasajeroService.findPasajerosByNid(nid);
+        return pasajero.map(ResponseEntity::ok) // Si hay un pasajero, devuelve 200 OK con el pasajero
+                .orElseGet(() -> ResponseEntity.noContent().build()); // Si no hay, devuelve 204 No Content
     }
+
 
     // Obtener pasajeros por nombre
     @GetMapping("/{nombre}")

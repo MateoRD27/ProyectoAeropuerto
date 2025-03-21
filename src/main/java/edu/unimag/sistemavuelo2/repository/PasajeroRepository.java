@@ -16,7 +16,7 @@ import java.util.UUID;
 @Repository
 public interface PasajeroRepository extends JpaRepository<Pasajero, Long> {
     // Buscar un pasajero por su Nid exacto
-    List<Pasajero> findByNid(String nid);
+    Optional<Pasajero> findByNid(String nid);
 
     //Buscar todos los pasajeros que tengan el mismo nombre
     List<Pasajero> findByNombre(String nombre);

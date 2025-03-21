@@ -55,9 +55,9 @@ class PasajeroRepositoryTest {
 
     @Test
     void testFindByNid() {
-        List<Pasajero> pasajeros = pasajeroRepository.findByNid("123456");
-        assertFalse(pasajeros.isEmpty());
-        assertEquals("Juan", pasajeros.getFirst().getNombre());
+        Optional<Pasajero> resultado = pasajeroRepository.findByNid("123456");
+        assertTrue(resultado.isPresent());
+        assertEquals("Juan", resultado.get().getNombre());
     }
 
     @Test
@@ -78,8 +78,8 @@ class PasajeroRepositoryTest {
         // Refrescar la entidad desde la base de datos
         entityManager.flush();
         entityManager.clear();
-        List<Pasajero> pasajeros = pasajeroRepository.findByNid("123456");
-        assertEquals("Carlos", pasajeros.getFirst().getNombre());
+        Optional<Pasajero> pasajeros = pasajeroRepository.findByNid("123456");
+        assertEquals("Carlos", pasajeros.get().getNombre());
     }
 
 

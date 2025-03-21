@@ -1,72 +1,40 @@
 package edu.unimag.sistemavuelo2.services;
 
-
-import org.springframework.stereotype.Service;
 import edu.unimag.sistemavuelo2.entities.Pasajero;
-import edu.unimag.sistemavuelo2.repository.PasajeroRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
-public class PasajeroService {
-    private final PasajeroRepository pasajeroRepository;
-
-    @Autowired
-    public PasajeroService(PasajeroRepository pasajeroRepository) {
-        this.pasajeroRepository = pasajeroRepository;
-    }
-
+public interface PasajeroService {
     // Buscar un pasajero por su NID
-    public List<Pasajero> findPasajerosByNid(String nid) {
-        return pasajeroRepository.findByNid(nid);
-    }
+    Optional<Pasajero> findPasajerosByNid(String nid);
 
     // Buscar pasajeros por nombre
-    public List<Pasajero> findPasajerosByNombre(String nombre) {
-        return pasajeroRepository.findByNombre(nombre);
-    }
+    List<Pasajero> findPasajerosByNombre(String nombre);
 
     // Contar cuántos pasajeros tienen el mismo nombre
-    public long countPasajerosByNombre(String nombre) {
-        return pasajeroRepository.countByNombre(nombre);
-    }
+    long countPasajerosByNombre(String nombre);
 
     // Buscar pasajeros que no tienen reservas
-    public List<Pasajero> findPasajerosWithoutReservas() {
-        return pasajeroRepository.findByReservasIsEmpty();
-    }
+    List<Pasajero> findPasajerosWithoutReservas();
 
     // Buscar un pasajero por nombre y pasaporte
-    public Optional<Pasajero> findPasajeroByNombreAndPasaporteId(String nombre, Long pasaporteId) {
-        return pasajeroRepository.findByNombreAndPasaporteId(nombre, pasaporteId);
-    }
+    Optional<Pasajero> findPasajeroByNombreAndPasaporteId(String nombre, Long pasaporteId);
 
     // Actualizar el nombre y apellido de un pasajero por su NID
-    public void updatePasajeroByNid(String nid, String nombre, String apellido) {
-        pasajeroRepository.updatePasajeroUid(nid, nombre, apellido);
-    }
+    void updatePasajeroByNid(String nid, String nombre, String apellido);
 
     // Obtener los pasajeros de una reserva dado un código de reserva
-    public List<Pasajero> findPasajerosByCodigoReserva(UUID codigoReserva) {
-        return pasajeroRepository.findPasajerosByCodigoReserva(codigoReserva);
-    }
+    List<Pasajero> findPasajerosByCodigoReserva(UUID codigoReserva);
 
     // Eliminar la reserva de un pasajero dado su NID y el código de reserva
-    public void deleteReservaByNidAndCodigoReserva(String nid, UUID codigoReserva) {
-        pasajeroRepository.deleteReservaByNidAndCodigoReserva(nid, codigoReserva);
-    }
+    void deleteReservaByNidAndCodigoReserva(String nid, UUID codigoReserva);
 
     // Actualizar el apellido de un pasajero dado su nombre y su ID
-    public void updateApellidoByNombreAndId(String nombre, Long id, String apellido) {
-        pasajeroRepository.updateApellidoPasajeroByNombreAndUid(nombre, id, apellido);
-    }
+    void updateApellidoByNombreAndId(String nombre, Long id, String apellido);
 
     // Buscar un pasajero dado su NID y el código de reserva
-    public Optional<Pasajero> findPasajeroByNidAndCodigoReserva(String nid, UUID codigoReserva) {
-        return pasajeroRepository.findPasajeroByNidAndCodigoReserva(nid, codigoReserva);
-    }
+    Optional<Pasajero> findPasajeroByNidAndCodigoReserva(String nid, UUID codigoReserva);
+
 }

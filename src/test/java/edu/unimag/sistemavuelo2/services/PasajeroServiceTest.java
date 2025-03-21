@@ -2,11 +2,13 @@ package edu.unimag.sistemavuelo2.services;
 
 import edu.unimag.sistemavuelo2.entities.Pasajero;
 import edu.unimag.sistemavuelo2.repository.PasajeroRepository;
+import edu.unimag.sistemavuelo2.services.impl.PasajeroServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -14,35 +16,34 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.UUID;
+
+
 //la recomendacion es usar extendwich para que reconociera mikito y no en el constructor
+@ExtendWith(MockitoExtension.class)
 class PasajeroServiceTest {
     @Mock //
     private PasajeroRepository pasajeroRepository;
 
     @InjectMocks //
-    private PasajeroService pasajeroService;
-
-    public PasajeroServiceTest() {
-        MockitoAnnotations.openMocks(this); //se utiliza para el junit4 y con el extendwich no se pone
-    }
+    private PasajeroServiceImpl pasajeroService;
 
     @Test
     void findPasajerosByNid() {
         // Dado
-        Pasajero pasajero1 = new Pasajero(1L, "Juan", "Perez", "123111", null, null);
-        Pasajero pasajero2 = new Pasajero(2L, "Maria", "Lopez", "1223334", null, null);
-        List<Pasajero> pasajeros = Arrays.asList(pasajero1, pasajero2);
+        Pasajero pasajero = new Pasajero(1L, "Juan", "Perez", "123111", null, null);
+        Optional<Pasajero> optionalPasajero = Optional.of(pasajero);
 
         // Cuando
-        when(pasajeroRepository.findByNid("123111")).thenReturn(pasajeros);
+        when(pasajeroRepository.findByNid("123111")).thenReturn(optionalPasajero);
 
         // Entonces
+        Optional<Pasajero> result = pasajeroService.findPasajerosByNid("123111");
 
-        List<Pasajero> result = pasajeroService.findPasajerosByNid("123111");
-
-        assertEquals("Juan", result.getFirst().getNombre()); //valida que cumple una condicion con otro valor
-        verify(pasajeroRepository, times(1)).findByNid("123111"); //se utiliza cuando dentro de la ejecucion se invocó el metodo
+        assertTrue(result.isPresent(), "El pasajero debería estar presente");
+        assertEquals("Juan", result.get().getNombre()); // Valida que el nombre es "Juan"
+        verify(pasajeroRepository, times(1)).findByNid("123111"); // Verifica que el método se llamó una vez
     }
+
 
     @Test
     void findPasajerosByNombre() {
@@ -98,13 +99,29 @@ class PasajeroServiceTest {
         String nuevoNombre = "Juanito";
         String nuevoApellido = "Perezito";
 
+        // Crear un pasajero mock
+        Pasajero pasajeroMock = new Pasajero();
+        pasajeroMock.setNid(nid);
+        pasajeroMock.setNombre("AntiguoNombre");
+        pasajeroMock.setApellido("AntiguoApellido");
+
+        // Simular que el repositorio devuelve el pasajero cuando se busque por NID
+        when(pasajeroRepository.findByNid(nid)).thenReturn(Optional.of(pasajeroMock));
+
+        // Simular que save() simplemente guarda el pasajero
+        // No es necesario usar doNothing, solo verificamos la llamada a save
+        when(pasajeroRepository.save(any(Pasajero.class))).thenReturn(pasajeroMock);
+
         // Cuando
-        doNothing().when(pasajeroRepository).updatePasajeroUid(nid, nuevoNombre, nuevoApellido);
+        pasajeroService.updatePasajeroByNid(nid, nuevoNombre, nuevoApellido);
 
         // Entonces
-        pasajeroService.updatePasajeroByNid(nid, nuevoNombre, nuevoApellido);
-        verify(pasajeroRepository, times(1)).updatePasajeroUid(nid, nuevoNombre, nuevoApellido);
+        verify(pasajeroRepository, times(1)).save(any(Pasajero.class)); // Verificar que save fue llamado
+        assertEquals(nuevoNombre, pasajeroMock.getNombre());  // Verificar que el nombre se actualizó
+        assertEquals(nuevoApellido, pasajeroMock.getApellido());  // Verificar que el apellido se actualizó
     }
+
+
 
     @Test
     void findPasajerosWithoutReservas() {
@@ -122,19 +139,29 @@ class PasajeroServiceTest {
         verify(pasajeroRepository, times(1)).findByReservasIsEmpty();
     }
 
+
     @Test
     void deleteReservaByNidAndCodigoReserva() {
         // Dado
         UUID codigoReserva = UUID.randomUUID();
         String nid = "123";
 
+        // Simulamos que el repositorio encuentra el pasajero con la reserva
+        Optional<Pasajero> pasajeroOpt = Optional.of(new Pasajero());  // Crear un Pasajero mockado
+
+        when(pasajeroRepository.findPasajeroByNidAndCodigoReserva(nid, codigoReserva)).thenReturn(pasajeroOpt);
+
         // Cuando
         doNothing().when(pasajeroRepository).deleteReservaByNidAndCodigoReserva(nid, codigoReserva);
 
-        // Entonces
+        // Ejecutamos el método del servicio
         pasajeroService.deleteReservaByNidAndCodigoReserva(nid, codigoReserva);
+
+        // Entonces
         verify(pasajeroRepository, times(1)).deleteReservaByNidAndCodigoReserva(nid, codigoReserva);
     }
+
+
 
     @Test
     void findPasajerosByCodigoReserva() {
@@ -160,13 +187,26 @@ class PasajeroServiceTest {
         Long id = 1L;
         String nuevoApellido = "Perezito";
 
+        // Crear un pasajero mock
+        Pasajero pasajeroMock = new Pasajero();
+        pasajeroMock.setId(id);
+        pasajeroMock.setNombre(nombre);
+        pasajeroMock.setApellido("ViejoApellido");
+
+        // Simular que el repositorio devuelve el pasajero cuando se busque por ID
+        when(pasajeroRepository.findById(id)).thenReturn(Optional.of(pasajeroMock));
+
+        // Simular que save() simplemente guarda el pasajero actualizado
+        when(pasajeroRepository.save(any(Pasajero.class))).thenReturn(pasajeroMock);
+
         // Cuando
-        doNothing().when(pasajeroRepository).updateApellidoPasajeroByNombreAndUid(nombre, id, nuevoApellido);
+        pasajeroService.updateApellidoByNombreAndId(nombre, id, nuevoApellido);
 
         // Entonces
-        pasajeroService.updateApellidoByNombreAndId(nombre, id, nuevoApellido);
-        verify(pasajeroRepository, times(1)).updateApellidoPasajeroByNombreAndUid(nombre, id, nuevoApellido);
+        verify(pasajeroRepository, times(1)).save(any(Pasajero.class)); // Verificar que save fue llamado
+        assertEquals(nuevoApellido, pasajeroMock.getApellido());  // Verificar que el apellido se actualizó
     }
+
 
     @Test
     void findPasajeroByNidAndCodigoReserva() {

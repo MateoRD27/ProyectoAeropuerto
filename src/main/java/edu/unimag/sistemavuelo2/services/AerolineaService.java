@@ -1,4 +1,4 @@
 package edu.unimag.sistemavuelo2.services;
 
-public class AerolineaService {
+public interface AerolineaService {
 }
